@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-import discord.opus
 from dotenv import load_dotenv
 import os
 from summarize import generate_summary
@@ -35,10 +34,8 @@ async def finished_recording(sink, channel: discord.VoiceChannel):
             for audio in sink.audio_data.values():
                 f.write(audio.file.getbuffer())
 
-        # Generate summary
-        summary = await generate_summary(audio_file_path)
 
-        # Send summary
+        summary = await generate_summary(audio_file_path)
         await channel.send(summary)
 
         # Delete audio file after it has been processed
@@ -55,7 +52,7 @@ async def finished_recording(sink, channel: discord.VoiceChannel):
         print(f"Error in finished_recording: {e}")
 
 
-@bot.command(name="endmeeting")
+@bot.slash_command(name="end_meeting", description="Stops recording audio in your voice channel")
 async def end_meeting(ctx):
     if ctx.voice_client:
         try:
@@ -68,7 +65,7 @@ async def end_meeting(ctx):
 
 
 
-@bot.command(name="startmeeting")
+@bot.slash_command(name="start_meeting", description="Start recording audio in your voice channel")
 async def start_meeting(ctx):
     try:
         # Check if author is not in a voice channel
@@ -91,9 +88,8 @@ async def start_meeting(ctx):
         await ctx.send(f"Joined {channel.name} and started recording the meeting.")
         
         # Start recording meeting
-        sink = discord.sinks.WaveSink()
         voice_client.start_recording(
-            sink,
+            discord.sinks.WaveSink(),
             finished_recording,
             channel
         )
