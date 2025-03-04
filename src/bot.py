@@ -57,6 +57,7 @@ async def end_meeting(ctx):
     if ctx.voice_client:
         try:
             ctx.voice_client.stop_recording()
+            ctx.voice_client.disconnect()
             await ctx.send("Meeting recording ended and summary is being generated.")
         except Exception as e:
             await ctx.send(f"Error ending meeting: {e}")
