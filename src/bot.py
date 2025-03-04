@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 import os
+from datetime import datetime as dt
 from summarize import generate_summary
 
 
@@ -9,12 +10,22 @@ from summarize import generate_summary
 load_dotenv()
 TOKEN = os.getenv("TOKEN")
 
+# Ensure the /app/data directory exists
+os.makedirs("/app/data", exist_ok=True)
 
 # Setup discord bot
 intents = discord.Intents.default()
 intents.voice_states = True
 intents.message_content = True # Required for command detection
 bot = commands.Bot(command_prefix="/", intents=intents)
+
+
+# Keep track of which channel id a meeting was called from
+recording_channels = {}
+# Keep track of cancelled recordings for servers.
+cancel_recordings = set()
+# Keep track of meeting start times
+meeting_start_times = {}
 
 
 @bot.event
@@ -24,9 +35,26 @@ async def on_ready():
 
 async def finished_recording(sink, channel: discord.VoiceChannel):
     try:
-        # Store participating users. Only stores users present during the end of the meeting.
-        recorded_users = [f"<@{user_id}>" for user_id, audio in sink.audio_data.items()]
-        print(f"Finished recording in {channel.name}, recorded users: {', '.join(recorded_users)}")
+
+        # Check if recording should be cancelled
+        if channel.guild.id in cancel_recordings:
+            cancel_recordings.remove(channel.guild.id)
+            channel.send("Recording was successfully cancelled.")
+            return
+
+        # Get text channel where meeting was called in
+        text_channel_id = recording_channels[channel.guild.id]
+        text_channel = bot.get_channel(text_channel_id)
+
+        audio_file_path = f"/app/data/meeting_{channel.id}_{dt.now().strftime('%Y%m%d_%H%M%S')}.wav"
+        
+        start_time = meeting_start_times.get(channel.guild.id)
+        if start_time:
+            duration = dt.now() - start_time
+            duration_minutes = int(duration.total_seconds() / 60)
+        else:
+            duration_minutes = "Unknown"
+
 
         # Create audio file
         audio_file_path = f"recorded_audio_{channel.id}.wav"
@@ -34,13 +62,9 @@ async def finished_recording(sink, channel: discord.VoiceChannel):
             for audio in sink.audio_data.values():
                 f.write(audio.file.getbuffer())
 
-
-        summary = await generate_summary(audio_file_path)
-        await channel.send(summary)
-
-        # Delete audio file after it has been processed
-        if os.path.exists(audio_file_path):
-            os.remove(audio_file_path)
+        # Get meeting summary in text
+        summary = await generate_summary(audio_file_path, duration_minutes)
+        await text_channel.send(summary)
 
     except FileNotFoundError:
         await channel.send("Audio file not found.")
@@ -52,26 +76,45 @@ async def finished_recording(sink, channel: discord.VoiceChannel):
         print(f"Error in finished_recording: {e}")
 
 
-@bot.slash_command(name="end_meeting", description="Stops recording audio in your voice channel")
+bot.slash_command(name="cancel", description="Cancels the current recording in your voice channel")
+async def cancel(ctx):
+    await ctx.defer()
+    try:     
+        if ctx.voice_client:
+            cancel_recordings.add(ctx.guild.id)
+            await ctx.voice_client.disconnect()
+        else:
+            await ctx.followup.send("App is currently not recording.")
+    except Exception as e:
+        if ctx.voice_client:
+            await ctx.voice_client.disconnect()
+            await ctx.followup.send("Error cancelling the recording.")
+
+
+@bot.slash_command(name="end_meeting", description="Stops recording audio in your voice channel and gets summary")
 async def end_meeting(ctx):
+    await ctx.defer()
     if ctx.voice_client:
         try:
             ctx.voice_client.stop_recording()
-            ctx.voice_client.disconnect()
-            await ctx.send("Meeting recording ended and summary is being generated.")
+            await ctx.voice_client.disconnect()
+            await ctx.followup.send("The recording has ended and a summary is being generated.")
         except Exception as e:
-            await ctx.send(f"Error ending meeting: {e}")
+            await ctx.followup.send(f"Error ending meeting: {e}")
+            if ctx.voice_client:
+                await ctx.voice_client.disconnect()
     else:
-        await ctx.send("Bot is not currently recording in this channel.")
+        await ctx.followup.send("App is currently not recording.")
 
 
 
 @bot.slash_command(name="start_meeting", description="Start recording audio in your voice channel")
 async def start_meeting(ctx):
+    await ctx.defer()
     try:
         # Check if author is not in a voice channel
         if not ctx.author.voice:
-            return await ctx.send("You are not connected to a voice channel.")
+            return await ctx.followup.send("You are not connected to a voice channel.")
         
         # Define channel id to join
         channel = ctx.author.voice.channel
@@ -82,12 +125,17 @@ async def start_meeting(ctx):
                 await ctx.voice_client.disconnect()
                 voice_client = await channel.connect()
             else:
-                return await ctx.send("Already in this voice channel.")
+                return await ctx.followup.send("Already in this voice channel.")
 
         # Join the voice channel
         voice_client = await channel.connect()
-        await ctx.send(f"Joined {channel.name} and started recording the meeting.")
+        await ctx.followup.send(f"Joined {channel.name} and started recording the meeting.")
         
+        # Add guild id to recording_channels dict
+        recording_channels[ctx.guild.id] = ctx.channel.id
+        # Add starting time for meeting
+        meeting_start_times[ctx.guild.id] = dt.now()
+
         # Start recording meeting
         voice_client.start_recording(
             discord.sinks.WaveSink(),
@@ -96,9 +144,10 @@ async def start_meeting(ctx):
         )
 
     except Exception as e:
-        await ctx.send(f"Error starting meeting: {str(e)}")
+        await ctx.followup.send(f"Error starting meeting: {str(e)}")
         print(f"Error in start_meeting: {e}")
-
+        if ctx.voice_client:
+            await ctx.voice_client.disconnect()
 
 if __name__ == "__main__":
     try:
