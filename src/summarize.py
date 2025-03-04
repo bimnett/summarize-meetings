@@ -1,19 +1,19 @@
 from dotenv import load_dotenv
 import os
 from google import genai
-import asyncio
+from utils import get_formatted_date
 
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 # Generates a summary from an audio file.
-async def generate_summary(audio_file_path):
-    summary = await asyncio.to_thread(_run_gemini, audio_file_path)
+async def generate_summary(audio_file_path, duration_minutes):
+    summary = await _run_gemini(audio_file_path, duration_minutes)
     return summary
     
 
 # Sends audio file to Google Gemini's API. Returns a summary of the audio file
-def _run_gemini(audio_file_path):
+async def _run_gemini(audio_file_path, duration_minutes):
 
     try:
         # Initialize Gemini client
@@ -22,16 +22,21 @@ def _run_gemini(audio_file_path):
         # Define gemini model to use
         gemini_model = "gemini-2.0-flash"
 
-        # Create audio file object
-        with open(audio_file_path, "rb"):
-            audio_file = audio_file_path.read()
-
+        # Upload audio file to Gemini file API
         audio_file = gemini.files.upload(file=audio_file_path)
 
         # Define system/user prompt
-        prompt = """You are a world-class transcript summarizer that never misses a detail. 
-                    You will recieve and transcribe an audio file of a meeting, and you will respond with a summary.
-                    Make sure to only include notes that are relevant to the meeting."""
+        prompt = f"""Summarize the provided meeting audio. Only include relevant, non-discriminatory notes. 
+            The current date is {get_formatted_date()}, and the meeting duration is {duration_minutes} minutes. 
+            Use this markdown format, and fill in the date and duration, but prepend the format with 2 new lines:
+            # Meeting Summary
+            ### Topic: <topic>
+            ### Date: <date>
+            ### Duration: <duration> minutes
+            ### Summary:
+            <summary>
+            Your response can not have anything else in it but the summary.
+            """
 
         # Send request
         summary = gemini.models.generate_content(
@@ -39,8 +44,17 @@ def _run_gemini(audio_file_path):
             contents=[prompt, audio_file]
         )
 
+        # Print total token count used for prompt
+        print(f"Total token count: {summary.usage_metadata.total_token_count}")
+
+        # Delete audio file locally and Google's file API after it has been processed
+        if os.path.exists(audio_file_path):
+            os.remove(audio_file_path)
+        gemini.files.delete(name=audio_file.name)
+
         return summary.text
     
     except Exception as e:
         print(f"Error in _run_gemini: {e}")
         return f"Error processing audio with Gemini: {e}"
+    
