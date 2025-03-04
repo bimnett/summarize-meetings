@@ -9,12 +9,42 @@ sessions, and generating meeting summaries.
 
 ## Installation and Setup
 
-To use this bot, follow these steps:
+To host this bot locally, you have two recommended installation methods:
 
-1. Fork this repository to create your own copy.
-2. (Optional) Setup a [virtual environment](https://www.freecodecamp.org/news/how-to-setup-virtual-environments-in-python/)
-3. Install the required dependencies by running `pip install --no-cache-dir -r requirements.txt`.
-4. Configure the bot's settings in the `.env` file by modifying the `GEMINI_API_KEY` and `TOKEN` variables.
+**Option 1: Docker (Recommended)**
+
+Using Docker simplifies setup and ensures a consistent environment.
+
+1.  **Clone the Repository:**
+    ```bash
+    git clone <your-repository-url>
+    cd <repository-directory>
+    ```
+2.  **Build the Docker Image:**
+    ```bash
+    docker build -t meeting-summary-bot .
+    ```
+3.  **Run the Docker Container:**
+    ```bash
+    docker run -e GEMINI_API_KEY=<your_gemini_api_key> -e TOKEN=<your_discord_bot_token> meeting-summary-bot
+    ```
+    * Replace `<your_gemini_api_key>` and `<your_discord_bot_token>` with your actual API key and bot token.
+    * If you need to mount a local `.env` file, use the `-v` flag: `docker run -v $(pwd)/.env:/app/.env -e GEMINI_API_KEY=<your_gemini_api_key> -e TOKEN=<your_discord_bot_token> meeting-summary-bot`
+
+**Option 2: Local Python Environment**
+
+If you prefer a local setup:
+
+1.  **Fork this Repository:**
+    Fork this repository to create your own copy.
+2.  **(Optional but recommended) Setup a [Virtual Environment](https://www.freecodecamp.org/news/how-to-setup-virtual-environments-in-python/)**
+3.  **Install Dependencies:**
+    Install the required dependencies by running `pip install --no-cache-dir -r requirements.txt`.
+4.  **Configure `.env` File:**
+    Configure the bot's settings in the `.env` file by modifying the `GEMINI_API_KEY` and `TOKEN` variables.
+5.  **Run the Bot:**
+    ```bash
+    python -u bot.py
 
 ## Running the Bot
 
