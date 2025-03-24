@@ -8,7 +8,7 @@ from summarize import generate_summary
 
 # Setup env variables
 load_dotenv()
-TOKEN = os.getenv("TOKEN")
+TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 
 # Ensure the /app/data directory exists
 os.makedirs("/app/data", exist_ok=True)

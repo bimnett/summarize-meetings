@@ -2,7 +2,7 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# Install system dependencies (libopus and ffmpeg)
+# Install system dependencies for recording voice channel audio (libopus and ffmpeg)
 RUN apt-get update && apt-get install -y \
     libopus-dev \
     ffmpeg \
