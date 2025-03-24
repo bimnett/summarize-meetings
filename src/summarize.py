@@ -7,13 +7,13 @@ load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 # Generates a summary from an audio file.
-async def generate_summary(audio_file_path, duration_minutes):
+async def generate_summary(audio_file_path: str, duration_minutes: int | str) -> str:
     summary = await _run_gemini(audio_file_path, duration_minutes)
     return summary
     
 
 # Sends audio file to Google Gemini's API. Returns a summary of the audio file
-async def _run_gemini(audio_file_path, duration_minutes):
+async def _run_gemini(audio_file_path: str, duration_minutes: int | str) -> str:
 
     try:
         # Initialize Gemini client

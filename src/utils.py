@@ -1,9 +1,7 @@
 from datetime import datetime as dt
-import contextlib
-import wave
 
 # Gets current date in the format "29 of January, 2025"
-def get_formatted_date():
+def get_formatted_date() -> str:
     now = dt.now()
     day = now.day
     month = now.strftime("%B")  # Full month name
