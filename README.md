@@ -39,15 +39,13 @@ Using Docker simplifies the setup and ensures a consistent environment.
     git clone <your-repository-url>
     cd <repository-directory>
     ```
-2.  **Build the Docker Image:**
-    ```bash
-    docker build -t meeting-summary-bot .
-    ```
-3.  **Run the Docker Container:**
-    ```bash
-    docker run -e GEMINI_API_KEY=<your_gemini_api_key> -e DISCORD_BOT_TOKEN=<your_discord_bot_token> meeting-summary-bot
-    ```
+2.  **Create a `.env` file in the root directory:**
+    * Copy and paste the contents of `.env.example`
     * Replace `<your_gemini_api_key>` and `<your_discord_bot_token>` with your Gemini and Discord API keys.
+3.  **Run the Docker Service:**
+    ```bash
+    docker-compose up --build
+    ```
 
 **Option 2: Local Python Environment**
 
@@ -59,7 +57,7 @@ If you prefer a local setup:
 3.  **Install Dependencies:**
     Install the required dependencies by running
     ```bash
-    cd src && pip install --no-cache-dir -r requirements.txt
+    cd src && pip3 install --no-cache-dir -r requirements.txt
     ```
 4.  **Configure `.env` File:**
     Configure the bot's settings in the `.env` file by modifying the `GEMINI_API_KEY` and `DISCORD_BOT_TOKEN` variables.
