@@ -1,8 +1,9 @@
 <p align="center">
-    <img src="./images/Icon_2000x2000.jpg" height=600 width=600/>
+    <img src="./images/Icon_2000x2000.jpg" height=350 width=350/>
 </p>
+<center><a href="https://www.freepik.com/free-vector/hand-drawn-flat-paper-cartoon-illustration_156119334.htm#fromView=search&page=1&position=3&uuid=1864ad44-9394-48df-ac88-0bc376a0059b&query=Mascot+notes">Designed by Freepik</a></center>
 
-Designed by [Freepik](https://www.freepik.com/free-vector/hand-drawn-flat-paper-cartoon-illustration_156119334.htm#fromView=search&page=1&position=3&uuid=1864ad44-9394-48df-ac88-0bc376a0059b&query=Mascot+notes)
+&nbsp;
 
 A Discord bot designed that facilitates remote meetings, by joining voice channels, recording audio 
 sessions, and generating meeting summaries.
