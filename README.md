@@ -1,3 +1,5 @@
+<h1 align="center"> Meeting Summarizer </h1>
+
 <p align="center">
     <img src="./images/Icon_2000x2000.jpg" height=350 width=350/>
 </p>
