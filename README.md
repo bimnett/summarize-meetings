@@ -1,21 +1,32 @@
-A Discord bot designed to facilitate remote meetings by joining voice channels, recording audio 
+![BotIcon](/images/Icon_2000x2000.jpg)
+
+Designed by [Freepik](https://www.freepik.com/free-vector/hand-drawn-flat-paper-cartoon-illustration_156119334.htm#fromView=search&page=1&position=3&uuid=1864ad44-9394-48df-ac88-0bc376a0059b&query=Mascot+notes)
+
+A Discord bot designed that facilitates remote meetings, by joining voice channels, recording audio 
 sessions, and generating meeting summaries.
 
 ## Features
 
-* **Voice Channel Joining**: Joins specified voice channels for meetings.
-* **Audio Recording**: Records audio from the joined voice channel until the meeting is ended.
+* **Audio Recording**: Joins a voice channel and records audio until the meeting has ended.
 * **Meeting Summary Generation**: Generates a summary of the recorded meeting in the form of written notes.
 
 ## Installation and Setup
 
-To host this bot locally, you have two recommended installation methods:
+To host this bot locally, there are two recommended installation methods.
+
+Prerequisites:
+* Python (3.7 or higher)
+* [Setting up a bot on Discord's developer portal](./docs/SetupDiscordBot.md)
+* [A Google Gemini API key](https://ai.google.dev/gemini-api/docs/api-key)
+* Docker (only for docker option)
+
+&nbsp;
 
 **Option 1: Docker (Recommended)**
 
-Using Docker simplifies setup and ensures a consistent environment.
+Using Docker simplifies the setup and ensures a consistent environment.
 
-1.  **Clone the Repository:**
+1.  **Fork and Clone the Repository:**
     ```bash
     git clone <your-repository-url>
     cd <repository-directory>
@@ -26,33 +37,28 @@ Using Docker simplifies setup and ensures a consistent environment.
     ```
 3.  **Run the Docker Container:**
     ```bash
-    docker run -e GEMINI_API_KEY=<your_gemini_api_key> -e TOKEN=<your_discord_bot_token> meeting-summary-bot
+    docker run -e GEMINI_API_KEY=<your_gemini_api_key> -e DISCORD_BOT_TOKEN=<your_discord_bot_token> meeting-summary-bot
     ```
-    * Replace `<your_gemini_api_key>` and `<your_discord_bot_token>` with your actual API key and bot token.
-    * If you need to mount a local `.env` file, use the `-v` flag: `docker run -v $(pwd)/.env:/app/.env -e GEMINI_API_KEY=<your_gemini_api_key> -e TOKEN=<your_discord_bot_token> meeting-summary-bot`
+    * Replace `<your_gemini_api_key>` and `<your_discord_bot_token>` with your Gemini and Discord API keys.
 
 **Option 2: Local Python Environment**
 
 If you prefer a local setup:
 
-1.  **Fork this Repository:**
-    Fork this repository to create your own copy.
+1.  **Fork and clone this Repository:**
+    Fork and clone this repository to create your own copy.
 2.  **(Optional but recommended) Setup a [Virtual Environment](https://www.freecodecamp.org/news/how-to-setup-virtual-environments-in-python/)**
 3.  **Install Dependencies:**
-    Install the required dependencies by running `pip install --no-cache-dir -r requirements.txt`.
+    Install the required dependencies by running
+    ```bash
+    cd src && pip install --no-cache-dir -r requirements.txt
+    ```
 4.  **Configure `.env` File:**
-    Configure the bot's settings in the `.env` file by modifying the `GEMINI_API_KEY` and `TOKEN` variables.
+    Configure the bot's settings in the `.env` file by modifying the `GEMINI_API_KEY` and `DISCORD_BOT_TOKEN` variables.
 5.  **Run the Bot:**
     ```bash
     python -u bot.py
-
-## Running the Bot
-
-To run the bot, execute the following command:
-```bash
-python bot.py
-```
-This will start the bot and begin listening for commands.
+    ```
 
 ## Commands
 
