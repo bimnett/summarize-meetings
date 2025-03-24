@@ -1,7 +1,10 @@
 <p align="center">
     <img src="./images/Icon_2000x2000.jpg" height=350 width=350/>
 </p>
-<center><a href="https://www.freepik.com/free-vector/hand-drawn-flat-paper-cartoon-illustration_156119334.htm#fromView=search&page=1&position=3&uuid=1864ad44-9394-48df-ac88-0bc376a0059b&query=Mascot+notes">Designed by Freepik</a></center>
+
+<div style="text-align: center;">
+    <a href="https://www.freepik.com/free-vector/hand-drawn-flat-paper-cartoon-illustration_156119334.htm#fromView=search&page=1&position=3&uuid=1864ad44-9394-48df-ac88-0bc376a0059b&query=Mascot+notes">Designed by Freepik</a>
+</div>
 
 &nbsp;
 
