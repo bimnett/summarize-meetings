@@ -23,7 +23,7 @@ sessions, and generating meeting summaries.
 To host this bot locally, there are two recommended installation methods.
 
 Prerequisites:
-* Python (3.7 or higher)
+* Python (3.12 or higher recommended, at least 3.10)
 * [Setting up a bot on Discord's developer portal](./docs/SetupDiscordBot.md)
 * [A Google Gemini API key](https://ai.google.dev/gemini-api/docs/api-key)
 * Docker (only for docker option)
@@ -36,7 +36,7 @@ Using Docker simplifies the setup and ensures a consistent environment.
 
 1.  **Fork and Clone the Repository:**
     ```bash
-    git clone <your-repository-url>
+    git clone <repository-url>
     cd <repository-directory>
     ```
 2.  **Create a `.env` file in the root directory:**
@@ -59,8 +59,9 @@ If you prefer a local setup:
     ```bash
     cd src && pip3 install --no-cache-dir -r requirements.txt
     ```
-4.  **Configure `.env` File:**
-    Configure the bot's settings in the `.env` file by modifying the `GEMINI_API_KEY` and `DISCORD_BOT_TOKEN` variables.
+4.  **Create a `.env` file in the root directory:**
+    * Copy and paste the contents of `.env.example`
+    * Replace `<your_gemini_api_key>` and `<your_discord_bot_token>` with your Gemini and Discord API keys.
 5.  **Run the Bot:**
     ```bash
     python -u bot.py
