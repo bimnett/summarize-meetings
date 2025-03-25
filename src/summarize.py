@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 import os
 from google import genai
-from utils import get_formatted_date
+from utils import get_formatted_date, format_gemini_response
 
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
@@ -30,14 +30,15 @@ async def _run_gemini(audio_file_path: str, duration_minutes: str) -> str:
         # Define system/user prompt
         prompt = f"""Summarize the provided meeting audio. Only include relevant, non-discriminatory notes. 
             The current date is {get_formatted_date()}, and the meeting duration is {duration_minutes}. 
-            Use this markdown format, and fill in the date and duration, but prepend the format with 2 new lines:
+            Use this markdown format, and fill in the date and duration:
             # Meeting Summary
             ### Topic: <topic>
             ### Date: <date>
             ### Duration: <duration>
             ### Summary:
             <summary>
-            Your response can not have anything else in it but the summary.
+
+            Your response shall only contain the summary, enclosed in a multi-line code block.
             """
 
         # Send request
@@ -54,7 +55,8 @@ async def _run_gemini(audio_file_path: str, duration_minutes: str) -> str:
             os.remove(audio_file_path)
         gemini.files.delete(name=audio_file.name)
 
-        return summary.text
+        formatted_response = format_gemini_response(summary.text)
+        return formatted_response
     
     except Exception as e:
         print(f"Error in _run_gemini: {e}")

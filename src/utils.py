@@ -27,3 +27,16 @@ def get_meeting_duration_minutes(meeting_start_time: dt | None) -> str:
     except Exception as e:
         print(f"Unexpected error: {e}")
         return "Unknown"
+    
+# Parses and formats Gemini response for a meeting summary
+def format_gemini_response(summary: str) -> str:
+    if not summary.startswith('#'):
+        counter = 1
+        # Count redundant characters (multi-line code block characters)
+        while summary[counter] != '\n':
+            counter += 1
+        
+        # Remove redundant multi-line code from both ends of the summary
+        summary = summary[counter:-3]
+
+    return summary
