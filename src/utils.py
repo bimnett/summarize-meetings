@@ -15,3 +15,15 @@ def get_formatted_date() -> str:
 
     formatted_date = f"{day}{suffix} of {month}, {year}"
     return formatted_date
+
+# Calculates meeting duration based on a given start time
+def get_meeting_duration_minutes(meeting_start_time: dt | None) -> str:
+    try:
+        total_duration = dt.now() - meeting_start_time
+        duration_minutes = int(total_duration.total_seconds() / 60)
+        return f"{duration_minutes} minutes" if duration_minutes != 1 else f"{duration_minutes} minute"
+    except TypeError:
+        return f"Unknown"
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        return "Unknown"
