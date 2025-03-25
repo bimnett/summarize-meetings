@@ -27,7 +27,7 @@ async def _run_gemini(audio_file_path: str, duration_minutes: int | str) -> str:
 
         # Define system/user prompt
         prompt = f"""Summarize the provided meeting audio. Only include relevant, non-discriminatory notes. 
-            The current date is {get_formatted_date()}, and the meeting duration is {duration_minutes} minutes. 
+            The current date is {get_formatted_date()}, and the meeting duration is {duration_minutes}. 
             Use this markdown format, and fill in the date and duration, but prepend the format with 2 new lines:
             # Meeting Summary
             ### Topic: <topic>

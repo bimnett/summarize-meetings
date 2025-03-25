@@ -4,9 +4,8 @@ from dotenv import load_dotenv
 import os
 from datetime import datetime as dt
 from summarize import generate_summary
+from utils import get_meeting_duration_minutes
 
-
-# Setup env variables
 load_dotenv()
 TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 
@@ -48,13 +47,9 @@ async def finished_recording(sink, channel: discord.VoiceChannel):
 
         audio_file_path = f"/app/data/meeting_{channel.id}_{dt.now().strftime('%Y%m%d_%H%M%S')}.wav"
         
+        # Get meeting duration
         start_time = meeting_start_times.get(channel.guild.id)
-        if start_time:
-            duration = dt.now() - start_time
-            duration_minutes = int(duration.total_seconds() / 60)
-        else:
-            duration_minutes = "Unknown"
-
+        meeting_duration_minutes = get_meeting_duration_minutes(start_time)
 
         # Create audio file
         audio_file_path = f"recorded_audio_{channel.id}.wav"
@@ -63,7 +58,7 @@ async def finished_recording(sink, channel: discord.VoiceChannel):
                 f.write(audio.file.getbuffer())
 
         # Get meeting summary in text
-        summary = await generate_summary(audio_file_path, duration_minutes)
+        summary = await generate_summary(audio_file_path, meeting_duration_minutes)
         await text_channel.send(summary)
 
     except FileNotFoundError:
