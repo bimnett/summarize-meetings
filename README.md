@@ -1,7 +1,7 @@
 <h1 align="center"> Meeting Summarizer </h1>
 
 <p align="center">
-    <img src="./images/Icon_2000x2000.jpg" height=350 width=350/>
+    <img src="./images/readme/Icon_2000x2000.jpg" height=350 width=350/>
 </p>
 
 <p align="center">
@@ -10,7 +10,7 @@
 
 &nbsp;
 
-A Discord bot designed that facilitates remote meetings, by joining voice channels, recording audio 
+A Discord bot designed that facilitates remote meetings by joining voice channels, recording audio 
 sessions, and generating meeting summaries.
 
 ## Features
