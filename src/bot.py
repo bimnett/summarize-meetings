@@ -15,16 +15,16 @@ os.makedirs("/app/data", exist_ok=True)
 # Setup discord bot
 intents = discord.Intents.default()
 intents.voice_states = True
-intents.message_content = True # Required for command detection
+intents.message_content = True
 bot = commands.Bot(command_prefix="/", intents=intents)
 
 
 # Keep track of which channel id a meeting was called from
-recording_channels = {}
+recording_channels: dict[int, int] = {}
 # Keep track of cancelled recordings for servers.
 cancel_recordings = set()
 # Keep track of meeting start times
-meeting_start_times = {}
+meeting_start_times: dict[int, dt] = {}
 
 
 @bot.event

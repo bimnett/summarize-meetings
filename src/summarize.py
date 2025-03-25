@@ -7,13 +7,15 @@ load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 # Generates a summary from an audio file.
-async def generate_summary(audio_file_path: str, duration_minutes: int | str) -> str:
+async def generate_summary(audio_file_path: str, duration_minutes: str) -> str:
     summary = await _run_gemini(audio_file_path, duration_minutes)
+    if not summary:
+        return "There was an error generating a summary."
     return summary
     
 
-# Sends audio file to Google Gemini's API. Returns a summary of the audio file
-async def _run_gemini(audio_file_path: str, duration_minutes: int | str) -> str:
+# Sends audio file to the Google Gemini API. Returns a summary of the audio file
+async def _run_gemini(audio_file_path: str, duration_minutes: str) -> str:
 
     try:
         # Initialize Gemini client
@@ -32,7 +34,7 @@ async def _run_gemini(audio_file_path: str, duration_minutes: int | str) -> str:
             # Meeting Summary
             ### Topic: <topic>
             ### Date: <date>
-            ### Duration: <duration> minutes
+            ### Duration: <duration>
             ### Summary:
             <summary>
             Your response can not have anything else in it but the summary.
@@ -56,5 +58,5 @@ async def _run_gemini(audio_file_path: str, duration_minutes: int | str) -> str:
     
     except Exception as e:
         print(f"Error in _run_gemini: {e}")
-        return f"Error processing audio with Gemini: {e}"
+        return None
     
