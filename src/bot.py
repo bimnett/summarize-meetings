@@ -3,6 +3,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 import os
 from datetime import datetime as dt
+import pytz
 from summarize import generate_summary
 from utils import get_meeting_duration_minutes
 
@@ -27,6 +28,10 @@ cancel_recordings = set()
 meeting_start_times: dict[int, dt] = {}
 
 
+# Define standard timezone as Europe/Stockholm
+swedish_timezone = "Europe/Stockholm"
+
+
 @bot.event
 async def on_ready():
     print(f"Logged in as {bot.user.name}")
@@ -49,7 +54,7 @@ async def finished_recording(sink, channel: discord.VoiceChannel):
         
         # Get meeting duration
         start_time = meeting_start_times.get(channel.guild.id)
-        end_time = dt.now()
+        end_time = dt.now(pytz.timezone(swedish_timezone))
         meeting_duration_minutes = get_meeting_duration_minutes(start_time, end_time)
 
         # Create audio file
@@ -59,7 +64,7 @@ async def finished_recording(sink, channel: discord.VoiceChannel):
                 f.write(audio.file.getbuffer())
 
         # Get meeting summary in text
-        summary = await generate_summary(audio_file_path, meeting_duration_minutes)
+        summary = await generate_summary(audio_file_path, meeting_duration_minutes, start_time, end_time)
         await text_channel.send(summary)
 
     except FileNotFoundError:
@@ -92,7 +97,7 @@ async def end_meeting(ctx):
     await ctx.defer()
     if ctx.voice_client:
         try:
-            await ctx.followup.send("The recording has ended and a summary is being generated.")
+            await ctx.followup.send("The recording has ended and a summary is being generated. This may take a few minutes.")
             await ctx.voice_client.disconnect()
         except Exception as e:
             await ctx.followup.send("There was an error while ending the meeting.")
@@ -130,7 +135,7 @@ async def start_meeting(ctx):
         # Add guild id to recording_channels dict
         recording_channels[ctx.guild.id] = ctx.channel.id
         # Add starting time for meeting
-        meeting_start_times[ctx.guild.id] = dt.now()
+        meeting_start_times[ctx.guild.id] = dt.now(pytz.timezone(swedish_timezone))
 
         # Start recording meeting
         voice_client.start_recording(

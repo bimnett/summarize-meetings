@@ -1,4 +1,5 @@
 from datetime import datetime as dt
+import pytz
 
 # Gets current date in the format "29 of January, 2025"
 def get_formatted_date(date: dt) -> str:
@@ -56,3 +57,10 @@ def format_gemini_response(summary: str) -> str:
         summary = summary[counter_front:counter_back]
 
     return summary
+
+def get_utc_timezone(time: dt) -> str:
+    utc_offset = time.strftime("%z")
+    offset_sign = utc_offset[0]
+    offset_hours = utc_offset[1:3]
+    utc_string = f"UTC{offset_sign}{int(offset_hours)}"
+    return utc_string

@@ -3,7 +3,8 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
 import unittest
 from datetime import datetime as dt
-from utils import get_formatted_date, get_meeting_duration_minutes, format_gemini_response
+import pytz
+from utils import *
 
 class TestDateFunctions(unittest.TestCase):
 
@@ -51,6 +52,14 @@ class TestDateFunctions(unittest.TestCase):
         summary4 = "123456789\nabcdefg. test."
         result4 = format_gemini_response(summary4)
         self.assertEqual(result4, "abcdefg. test.")
+
+    def test_get_utc_timezone(self):
+        timezone = pytz.timezone("Europe/Stockholm")
+        time = dt.now(timezone)
+        utc_timezone = get_utc_timezone(time)
+        expected_values = ("UTC+1", "UTC+2")
+        self.assertIn(utc_timezone, expected_values)
+
 
 if __name__ == '__main__':
     unittest.main()
