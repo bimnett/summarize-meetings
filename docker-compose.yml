@@ -4,3 +4,4 @@ services:
       context: ./src
     env_file:
       - .env
+    restart: unless-stopped
