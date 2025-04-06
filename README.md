@@ -10,17 +10,26 @@
 
 &nbsp;
 
-A Discord bot designed that facilitates remote meetings by joining voice channels, recording audio 
+A Discord bot that facilitates remote meetings by joining voice channels, recording audio 
 sessions, and generating meeting summaries.
 
-## Features
+<a href="https://discord.com/oauth2/authorize?client_id=1345827055060783104&permissions=274881054720&integration_type=0&scope=bot">
+    <h2 align="center"> Server Invite Link </h2>
+</a>
 
-* **Audio Recording**: Joins a voice channel and records audio until the meeting has ended.
-* **Meeting Summary Generation**: Generates a summary of the recorded meeting in the form of written notes.
+&nbsp;
+
+## Commands
+
+The bot responds to the following commands:
+
+* `/start_meeting`: Joins the voice channel that the author is currently in, and starts an audio recording session
+* `/end_meeting`: Ends the current audio recording session and generates meeting summary notes.
+* `/cancel`: Cancels the current audio recording session without generating summary notes.
 
 ## Installation and Setup
 
-To host this bot locally, there are two recommended installation methods.
+To host this bot locally, there are two options.
 
 Prerequisites:
 * Python (3.12 or higher recommended, at least 3.10)
@@ -76,14 +85,6 @@ If you prefer a local setup:
     ```bash
     python3 -u bot.py
     ```
-
-## Commands
-
-The bot responds to the following commands:
-
-* `/start_meeting`: Joins the voice channel that the author is currently in, and starts an audio recording session
-* `/end_meeting`: Ends the current audio recording session and generates meeting summary notes.
-* `/cancel`: Cancels the current audio recording session without generating summary notes.
 
 ## License
 
