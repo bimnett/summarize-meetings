@@ -29,7 +29,7 @@ async def _run_gemini(audio_file_path: str, duration_minutes: str, start_time: d
         audio_file = gemini.files.upload(file=audio_file_path)
 
         # Define system/user prompt
-        prompt = f"""Summarize the provided meeting audio. Only include relevant, non-discriminatory notes. 
+        prompt = f"""Summarize the provided meeting audio. Make sure to include relevant, non-discriminatory notes. 
             The current date is {get_formatted_date(dt.now())}, and the meeting duration is {duration_minutes}. 
             The meeting started at {start_time.strftime("%H:%M")}, and ended at {end_time.strftime("%H:%M")} ({get_utc_timezone(start_time)}).
             Use this markdown format, and fill in the date, duration, start and end time, and the summary:

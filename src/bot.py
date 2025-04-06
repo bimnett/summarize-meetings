@@ -43,7 +43,6 @@ async def finished_recording(sink, channel: discord.VoiceChannel):
         # Check if recording should be cancelled
         if channel.guild.id in cancel_recordings:
             cancel_recordings.remove(channel.guild.id)
-            channel.send("Recording was successfully cancelled.")
             return
 
         # Get text channel where meeting was called in
@@ -77,13 +76,14 @@ async def finished_recording(sink, channel: discord.VoiceChannel):
         print(f"Error in finished_recording: {e}")
 
 
-bot.slash_command(name="cancel", description="Cancels the current recording in your voice channel")
+@bot.slash_command(name="cancel", description="Cancels the current recording in your voice channel")
 async def cancel(ctx):
     await ctx.defer()
     try:     
         if ctx.voice_client:
             cancel_recordings.add(ctx.guild.id)
             await ctx.voice_client.disconnect()
+            await ctx.followup.send("Recording was successfully cancelled.")
         else:
             await ctx.followup.send("App is currently not recording.")
     except Exception as e:
