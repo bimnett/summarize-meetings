@@ -14,7 +14,7 @@ A Discord bot that facilitates remote meetings by joining voice channels, record
 sessions, and generating meeting summaries.
 
 <h2 align="center">
-    <a href="https://discord.com/oauth2/authorize?client_id=1345827055060783104&permissions=274881054720&integration_type=0&scope=bot"> Server Invite Link </a>
+    <a href="https://discord.com/oauth2/authorize?client_id=1345827055060783104&permissions=274881054720&integration_type=0&scope=bot" target="_blank"> Server Invite Link </a>
 </h2>
 
 &nbsp;
