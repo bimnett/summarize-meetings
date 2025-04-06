@@ -49,7 +49,8 @@ async def finished_recording(sink, channel: discord.VoiceChannel):
         
         # Get meeting duration
         start_time = meeting_start_times.get(channel.guild.id)
-        meeting_duration_minutes = get_meeting_duration_minutes(start_time)
+        end_time = dt.now()
+        meeting_duration_minutes = get_meeting_duration_minutes(start_time, end_time)
 
         # Create audio file
         audio_file_path = f"recorded_audio_{channel.id}.wav"
