@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 import os
 from google import genai
 from utils import get_formatted_date, format_gemini_response
+from datetime import datetime as dt
 
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
@@ -29,7 +30,7 @@ async def _run_gemini(audio_file_path: str, duration_minutes: str) -> str:
 
         # Define system/user prompt
         prompt = f"""Summarize the provided meeting audio. Only include relevant, non-discriminatory notes. 
-            The current date is {get_formatted_date()}, and the meeting duration is {duration_minutes}. 
+            The current date is {get_formatted_date(dt.now())}, and the meeting duration is {duration_minutes}. 
             Use this markdown format, and fill in the date and duration:
             # Meeting Summary
             ### Topic: <topic>
